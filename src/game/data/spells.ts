@@ -315,7 +315,6 @@ export function getSpellsWithNarrativeEffects(): Spell[] {
 
 export function getSpellsByClass(characterClass: string, level: number): Spell[] {
   const classSpellLists: Record<string, string[]> = {
-    outOfCombat: false,
     wizard: [
       'firebol', 'magic_missile', 'shield', 'burning_hands', 'hold_person',
       'web', 'misty_step', 'fireball', 'lightning_bolt', 'counterspell', 'haste'
@@ -332,7 +331,6 @@ export function getSpellsByClass(characterClass: string, level: number): Spell[]
     ],
     warlock: [
       'firebol', 'magic_missile', 'burning_hands', 'hold_person', 'misty_step', 'fireball', 'counterspell'
-    outOfCombat: false,
     ],
     paladin: [
       'cure_wounds', 'bless'
@@ -340,8 +338,6 @@ export function getSpellsByClass(characterClass: string, level: number): Spell[]
     ranger: [
       'cure_wounds', 'web'
     ],
-    outOfCombat: boolean;
-    narrativeEffects?: string[];
     artificer: [
       'cure_wounds', 'shield', 'web'
     ]
@@ -350,8 +346,6 @@ export function getSpellsByClass(characterClass: string, level: number): Spell[]
   const availableSpells = classSpellLists[characterClass] || [];
   return availableSpells
     .map(id => SPELLS[id])
-  outOfCombat: true,
-    narrativeEffects: ['escape_danger', 'reach_inaccessible_areas', 'surprise_enemies'],
     .filter(spell => spell && spell.level <= Math.ceil(level / 2));
 }
 
@@ -373,11 +367,9 @@ export function getSpellDamage(spell: Spell, casterLevel: number, spellSlotLevel
     if (cantripScaling > 0) {
       scaledDice = scaledDice.replace(/(\d+)d/, `${parseInt(scaledDice.match(/(\d+)d/)?.[1] || '1') + cantripScaling}d`);
     }
-  } else if (spellSlotLevel > spell.level) {
     // Higher level spell slots
     const extraLevels = spellSlotLevel - spell.level;
     // Most damage spells add 1 die per extra level
-    outOfCombat: true,
       scaledDice = scaledDice.replace(/(\d+)d/, `${parseInt(scaledDice.match(/(\d+)d/)?.[1] || '1') + extraLevels}d`);
   }
 

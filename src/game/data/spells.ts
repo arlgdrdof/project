@@ -358,19 +358,19 @@ export function getSpellDamage(spell: Spell, casterLevel: number, spellSlotLevel
 
   const baseDice = spell.damage?.dice || spell.healing?.dice || '1d4';
 
-  outOfCombat: false,
-    // Handle scaling spells
-    let scaledDice = baseDice;
+  // Handle scaling spells
+  let scaledDice = baseDice;
   if (spell.level === 0) {
     // Cantrips scale with character level
     const cantripScaling = Math.floor((casterLevel + 1) / 6);
     if (cantripScaling > 0) {
       scaledDice = scaledDice.replace(/(\d+)d/, `${parseInt(scaledDice.match(/(\d+)d/)?.[1] || '1') + cantripScaling}d`);
     }
+  } else {
     // Higher level spell slots
     const extraLevels = spellSlotLevel - spell.level;
     // Most damage spells add 1 die per extra level
-      scaledDice = scaledDice.replace(/(\d+)d/, `${parseInt(scaledDice.match(/(\d+)d/)?.[1] || '1') + extraLevels}d`);
+    scaledDice = scaledDice.replace(/(\d+)d/, `${parseInt(scaledDice.match(/(\d+)d/)?.[1] || '1') + extraLevels}d`);
   }
 
   return parseInt(scaledDice) || 1;

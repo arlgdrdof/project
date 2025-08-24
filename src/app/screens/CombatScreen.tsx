@@ -19,20 +19,18 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({ onEndCombat }) => {
   const { combat, updateCombat } = useGameStore();
   const [selectedAction, setSelectedAction] = useState<string>('');
   const [combatEngine, setCombatEngine] = useState<CombatEngine | null>(null);
+  const initializedRef = React.useRef(false);
 
   // Initialize combat engine
   React.useEffect(() => {
-    if (combat && !combatEngine) {
+    if (combat && !combatEngine && !initializedRef.current) {
       const engine = new CombatEngine(combat);
       engine.initializeCombat();
       setCombatEngine(engine);
-      updateCombat({ 
-        initiativeOrder: combat.initiativeOrder,
-        currentCharacterId: combat.currentCharacterId,
-        combatLog: engine.getCombatLog()
-      });
+      updateCombat(engine.currentCombatState);
+      initializedRef.current = true;
     }
-  }, [combat, combatEngine, updateCombat]);
+  }, [combat, combatEngine, updateCombat, initializedRef]);
 
   if (!combat) return null;
 

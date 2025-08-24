@@ -148,6 +148,13 @@ export class CombatEngine {
   }
 
   /**
+   * Get current combat state
+   */
+  get currentCombatState(): CombatState {
+    return this.combatState;
+  }
+
+  /**
    * Private helper methods
    */
   private getCurrentCharacter(): Character | null {

@@ -51,7 +51,7 @@ export const CombatGrid: React.FC<CombatGridProps> = ({
   const handleCellClick = useCallback((position: Position) => {
     if (!currentCharacter) return;
 
-    if (selectedAction === 'move') {
+    if (selectedAction === 'move' && !currentCharacter.hasUsedAction) {
       const path = findPath(currentCharacter.position, position, combatState, currentCharacter.id);
       if (path && path.length > 1) {
         onAction({
@@ -68,13 +68,29 @@ export const CombatGrid: React.FC<CombatGridProps> = ({
         c.position.x === position.x && c.position.y === position.y && c.id !== currentCharacter.id
       );
       
-      if (targetCharacter && hasLineOfSight(currentCharacter.position, position, combatState)) {
+      if (targetCharacter && targetCharacter.health.current > 0 && hasLineOfSight(currentCharacter.position, position, combatState)) {
         onAction({
           id: `attack_${Date.now()}`,
           type: 'attack',
           characterId: currentCharacter.id,
           target: targetCharacter.id,
           description: `Attack ${targetCharacter.name}`
+        });
+      }
+    } else if (selectedAction === 'spell') {
+      const targetCharacter = combatState.characters.find(c => 
+        c.position.x === position.x && c.position.y === position.y && c.id !== currentCharacter.id
+      );
+      
+      if (targetCharacter && targetCharacter.health.current > 0) {
+        // For now, cast a simple damage spell
+        onAction({
+          id: `spell_${Date.now()}`,
+          type: 'spell',
+          characterId: currentCharacter.id,
+          target: targetCharacter.id,
+          spellId: 'magic_missile',
+          description: `Cast Magic Missile on ${targetCharacter.name}`
         });
       }
     }

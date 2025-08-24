@@ -225,13 +225,22 @@ export class CombatEngine {
 
     this.logger.logSpellCast(character, action.spellId, target);
 
-    // Simplified spell processing - would be expanded with full spell system
-    // For now, just consume spell slot
-    const spell = require('../data/spells.js').SPELLS[action.spellId];
-    if (spell && spell.level > 0) {
-      const spellSlots = character.resources.spellSlots[spell.level];
-      if (spellSlots && spellSlots.current > 0) {
-        spellSlots.current--;
+    // Simple spell damage implementation
+    if (action.spellId === 'magic_missile' && target) {
+      const damage = 3 + Math.floor(Math.random() * 4) + 1; // 1d4+1 per missile, 3 missiles
+      target.health.current = Math.max(0, target.health.current - damage);
+      this.logger.logDamage(target, damage, 'force');
+      
+      if (target.health.current === 0) {
+        this.logger.logDeath(target);
+      }
+    } else if (action.spellId === 'firebolt' && target) {
+      const damage = Math.floor(Math.random() * 10) + 1; // 1d10
+      target.health.current = Math.max(0, target.health.current - damage);
+      this.logger.logDamage(target, damage, 'fire');
+      
+      if (target.health.current === 0) {
+        this.logger.logDeath(target);
       }
     }
 

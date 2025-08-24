@@ -298,7 +298,7 @@ export class EnemyAI {
       type: 'attack',
       characterId: character.id,
       target: target.id,
-      weaponId: weaponId || character.equipment.mainHand?.id,
+      weaponId: weaponId,
       description: `${character.name} attacks ${target.name}`
     };
   }

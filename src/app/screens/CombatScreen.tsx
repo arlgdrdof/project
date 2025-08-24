@@ -81,9 +81,22 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({ onEndCombat }) => {
         const aiAction = combatEngine.processAITurn();
         if (aiAction) {
           updateCombat({
+            currentCharacterId: combat.currentCharacterId,
+            turn: combat.turn,
+            round: combat.round,
             characters: combat.characters,
             combatLog: combatEngine.getCombatLog()
           });
+          
+          // Check for combat end after AI action
+          const victor = combatEngine.checkCombatEnd();
+          if (victor) {
+            updateCombat({ victor, isActive: false });
+            setTimeout(() => {
+              onEndCombat();
+            }, 2000);
+            return;
+          }
         }
         
         // Auto-advance AI turn

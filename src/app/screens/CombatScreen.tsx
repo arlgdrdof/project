@@ -298,7 +298,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({ onEndCombat }) => {
             </div>
 
             {/* Combat Log */}
-            <CombatLogDisplay log={combat.combatLog} />
+            <CombatLogDisplay log={combat.combatLog || []} />
           </div>
         </div>
       </div>
